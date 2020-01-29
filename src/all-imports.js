@@ -1,0 +1,13 @@
+import "@polymer/iron-pages/iron-pages.js";
+import "@polymer/iron-flex-layout/iron-flex-layout.js";
+import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
+import './oe-workflow-status.js';
+import './oe-dashboard-element.js';
+import "oe-mixins/oe-common-mixin.js";
+import '@polymer/app-layout/app-layout.js';
+import '@polymer/polymer/polymer-element.js';
+import 'oe-workflow-ui-components/oe-bpmn-viewer.js';
+import 'oe-workflow-ui-components/oe-workflow-element.js';
+import "oe-mixins/oe-common-mixin.js";
+import "oe-message-handler/oe-message-handler.js";
+import "oe-mixins/oe-ajax-mixin";

@@ -1,0 +1,10 @@
+{
+    "root": "",
+    "entrypoint": "index.html",
+    "shell": "src/all-imports.js",
+    "extraDependencies": [
+      "node_modules/@webcomponents/webcomponentsjs/**"
+    ],
+    "moduleResolution": "node",
+    "npm": true
+}

@@ -1,0 +1,38 @@
+{
+  "name": "oe-workflow-dashboard",
+  "version": "1.0.0",
+  "description": "oeCloud Workflow dashboard",
+  "main": "app/index.js",
+  "scripts": {
+    "watch": "webpack --watch --progress",
+    "build": "webpack",
+    "dev": "webpack-dev-server --open",
+    "prepare": "npm run build"
+  },
+  "files": [
+    "dist/**",
+    "dashboard.js"
+  ],
+  "keywords": [
+    "oe-cloud",
+    "workflow",
+    "dashboard"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@polymer/app-layout": "^3.1.0",
+    "@polymer/iron-pages": "^3.0.1",
+    "@polymer/paper-icon-button": "^3.0.1",
+    "copy-webpack-plugin": "^5.0.4",
+    "css-loader": "^3.4.1",
+    "mini-css-extract-plugin": "^0.8.0",
+    "monaco-editor": "^0.19.2",
+    "monaco-editor-webpack-plugin": "^1.8.2",
+    "oe-message-handler": "^2.1.0",
+    "oe-workflow-ui-components": "git+http://evgit/oecloud.io/oe-workflow-ui-components.git#master",
+    "style-loader": "^1.1.2",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.8.0"
+  }
+}

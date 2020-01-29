@@ -1,23 +1,14 @@
-# oeCloud Workflow Modeler
+# oeCloud Workflow Dashboard
 
 ## About
 
 
-## Running the workflow modeler
+## Running the workflow dashboard
 
 Install all required dependencies:
 
 ```
 npm install
-npm install -g grunt-cli
-```
-
-Build and run the project
-
-```
-grunt auto-build
-```
-
 
 ## License
 

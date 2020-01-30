@@ -16,10 +16,6 @@ module.exports = {
         test: /\.css$/,
         include: MONACO_DIR,
         use: ['style-loader', 'css-loader'],
-      },
-      {
-        test: /\.ttf$/,
-        use: ['file-loader']
       }
     ]
   },

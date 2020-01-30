@@ -25,6 +25,7 @@
     "@polymer/paper-icon-button": "^3.0.1",
     "copy-webpack-plugin": "^5.0.4",
     "css-loader": "^3.4.1",
+    "file-loader": "^5.0.2",
     "mini-css-extract-plugin": "^0.8.0",
     "monaco-editor": "^0.19.2",
     "monaco-editor-webpack-plugin": "^1.8.2",

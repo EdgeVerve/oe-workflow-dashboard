@@ -29,14 +29,15 @@ class OeWorkflowPlayground extends OEAjaxMixin(PolymerElement) {
     <style include="iron-flex iron-flex-alignment">
 
         paper-dialog{
-            width:90vw;
-            height:90vh;
+           overflow: auto;
+            width:100%;
+            height:100%;
             margin:0px;
             @apply --layout-vertical;
         }
 
         #viewer{
-            height:60vh;
+            height:70vh;
         }
         .action-panel paper-button{
             margin:0px 8px;
@@ -336,7 +337,7 @@ class OeWorkflowPlayground extends OEAjaxMixin(PolymerElement) {
     var self = this;
     this.__completeTask(this._selectedToken.__token.taskId, this.taskPayload, function (err, resp) {
       if (err) {
-        this.fire('oe-show-error', err);
+        self.fire('oe-show-error', err.detail.request.response.error.message);
         return;
       }
       self._gotoProgress();

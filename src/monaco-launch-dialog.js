@@ -75,7 +75,7 @@ class MonacoLaunchDialog extends OECommonMixin(PolymerElement) {
 
   _rerunProcess(e){
     var self = this;
-    var data = {};
+    var data;
     if(self.editor.getValue()){
       data = JSON.parse(self.editor.getValue());
     }

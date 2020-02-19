@@ -30,31 +30,21 @@ class OeDashboardElement extends OECommonMixin(PolymerElement) {
           background-color: var(--dark-primary-color);
           color: #FFF;
       }
-
-      #launchMenuBtn{
-        margin:8px;
+      #launchMenuBtn {
         padding: 0px;
       }
-
-      #launchMenuBtn paper-button{
-        margin:0px;
-        height: 40px;
-        width: 150px;
+      .item {
+        width: 225px;
+        justify-content: center;
       }
+     
       </style>
-    <app-header fixed condenses slot="header">
+      <app-header condenses reveals fixed slot="header" effects="waterfall">
       <app-toolbar>
+        <paper-icon-button icon="menu" on-tap="_navTap"></paper-icon-button>
         <div main-title>Workflow Dashboard</div>
       </app-toolbar>
     </app-header>
-   <!-- <paper-menu-button id="launchMenuBtn" vertical-offset="42">
-      <paper-button raised icon="menu" slot="dropdown-trigger">Test Workflow</paper-button> 
-      <paper-listbox slot="dropdown-content"> 
-        <template is="dom-repeat" items=[[allWorkflows]]>
-            <paper-item on-tap="_handleTestWorkflow">[[item.name]]</paper-item>
-        </template>
-      </paper-listbox>
-    </paper-menu-button> -->
     <div class="layout horizontal" id="OeDashboardEle">
       <iron-pages class="fullsize" selected="{{_selectedPage}}">
           <oe-workflow-element workflow-def-name={{allWorkflows}} rest-url="{{restApiRoot}}" id="list" on-oe-workflow-instance="_handleInstance"></oe-workflow-element>
@@ -62,9 +52,20 @@ class OeDashboardElement extends OECommonMixin(PolymerElement) {
       </iron-pages>
       <oe-message-handler persist-on="error"></oe-message-handler>
     </div>
-   <!-- <oe-workflow-playground id="playground"></oe-workflow-playground> -->
-    `
-      ;
+    <app-drawer id="startDrawer" align="start">
+    <paper-menu-button id="launchMenuBtn" horizontal-align="right" close-on-activate vertical-offset="42" horizontal-offset="32">
+      <paper-item class="item" slot="dropdown-trigger">Test Workflow</paper-item>
+      <paper-listbox slot="dropdown-content"> 
+        <template is="dom-repeat" items=[[allWorkflows]]>
+            <paper-item on-tap="_handleTestWorkflow">[[item.name]]</paper-item>
+        </template>
+      </paper-listbox>
+    </paper-menu-button> 
+    <paper-item class="item" on-tap="_handleCompWorkflow">Completed Workflow</paper-item>
+    <paper-item class="item" on-tap="_handleRunWorkflow">Running Workflow</paper-item>
+    </app-drawer>
+   <oe-workflow-playground id="playground"></oe-workflow-playground> 
+    `;
   }
   static get is() {
     return 'oe-dashboard-element';
@@ -103,6 +104,9 @@ class OeDashboardElement extends OECommonMixin(PolymerElement) {
     oReq.responseType = mime;
     oReq.send();
   }
+  _navTap(e){
+    this.$.startDrawer.toggle();
+  }
   connectedCallback() {
     super.connectedCallback();
     var self = this;
@@ -140,8 +144,18 @@ class OeDashboardElement extends OECommonMixin(PolymerElement) {
   }
 
   _handleTestWorkflow(e) {
+    this.$.startDrawer.close();
     this.$.playground.launch(e.model.item.name);
-  }
+ }
+ _handleCompWorkflow(e) {
+   this.$.startDrawer.close();
+   this.$.list.set('flag',true);
+ }
+ _handleRunWorkflow(e){
+  this.$.startDrawer.close();
+  this.$.list.set('flag',false);
+ }
+ 
 }
 
 window.customElements.define(OeDashboardElement.is, OeDashboardElement);

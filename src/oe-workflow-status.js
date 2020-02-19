@@ -22,6 +22,12 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
       height:100%;
       width: 100%;
     }
+    .pad{
+      padding: var(--my-padding, 12px);
+    }
+    #viewer {
+      height:70vh;
+    }
    .buttons {
      padding: 0px 20px;
    }
@@ -36,9 +42,10 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
     <div class="layout horizontal buttons">
     <paper-icon-button icon="zoom-in" on-tap="zoomIn"></paper-icon-button>
     <paper-icon-button icon="zoom-out" on-tap="zoomOut"></paper-icon-button>
+    <paper-icon-button icon="autorenew" on-tap="_resetZoom"></paper-icon-button>
     <paper-icon-button icon="refresh" on-tap="_procIdChanged"></paper-icon-button>
     </div>
-    <oe-bpmn-viewer id="viewer" style="height: 455px"></oe-bpmn-viewer>
+    <oe-bpmn-viewer id="viewer"></oe-bpmn-viewer>
     </div>`;
   }
   static get is() {
@@ -60,10 +67,16 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
         observer: '_procIdChanged'
       },
       userLt: {
-        type: Array
+        type: Array,
+        value: function () {
+          return [];
+        }
       },
       roleLt: {
-        type: Array
+        type: Array,
+        value: function () {
+          return [];
+        }
       },
       userRoleObject: {
         type: Object,
@@ -79,7 +92,16 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
   }
   connectedCallback() {
     super.connectedCallback();
+    var self = this;
     window.addEventListener('oe-workflow-rerun',this._handleError.bind(this));
+    this.$.viewer.addEventListener('wheel', function (event) {
+      event.preventDefault();
+      if (event.deltaY > 0) {
+        self.zoomOut();
+      } else {
+        self.zoomIn();
+      }
+    });
   }
   zoomIn(e) {
     var oeViewer = this.$.viewer;
@@ -90,6 +112,17 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
     var oeViewer = this.$.viewer;
     var zoom = oeViewer.zoom();
     oeViewer.zoom(zoom - 0.1);
+  }
+  _resetZoom() {
+    let canvas = this.$.viewer.viewer.get('canvas');
+    var zoomedAndScrolledViewbox = canvas.viewbox();
+    canvas.viewbox({
+      x: 0,
+      y: 0,
+      width: zoomedAndScrolledViewbox.outer.width,
+      height: zoomedAndScrolledViewbox.outer.height
+    });
+    canvas.zoom('fit-viewport');
   }
   _xhrget(url, mime, callback) {
     if (!callback && typeof mime === 'function') {
@@ -153,13 +186,16 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
           inputData.group = [];
           if (inputData.assignee || inputData.role) {
             self._xhrput(`${self.restUrlApi}/Tasks/${taskid}/delegate`, inputData, function (err, res) {
-              if (res) {
-                self.fire('oe-show-success', 'Delegated the assigned task to a different user');
+              if (!err) {
+                self.fire('oe-show-success', 'Task delegate is trigger for this Task Id'+ taskid);
+              }
+              else {
+                self.fire('oe-show-error', err.message)
               }
             });
           }
           else {
-            self.fire('oe-show-error', 'Select Assignee and Role to the task')
+            self.fire('oe-show-error', 'Select Assignee or Role to the task')
           }
         }
       });
@@ -230,12 +266,15 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
     var processTokenId = event.detail.processToken.id;
     var inputData = event.detail.data;
     self.$.viewer.$.sidepanel.style.display = 'none'
-    if (inputData && Object.keys(inputData).length) {
+    if (inputData && typeof(inputData) === 'object') {
       self._xhrput(`${self.restUrlApi}/ProcessInstances/${processInstanceId}/retry/${processTokenId}`, inputData, function (err, data) {
-        if (data) {
+        if (!err) {
           self.set('procInstanceId', null);
           self.fire('rerun-done', processInstanceId);
-          self.fire('oe-show-success', 'Retry of failed Task in a failed Process Instance is done');
+          self.fire('oe-show-success', 'Retry of failed Task is triggered for process token '+processTokenId);
+        }
+        else {
+          self.fire('oe-show-error', err.message);
         }
       });
     }

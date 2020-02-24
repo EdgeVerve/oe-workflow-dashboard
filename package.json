@@ -31,11 +31,13 @@
     "monaco-editor": "^0.19.2",
     "monaco-editor-webpack-plugin": "^1.8.2",
     "oe-message-handler": "git+http://evgit/oecloud.io/oe-message-handler.git#master",
-    "oe-ui-misc": "git+http://evgit/oecloud.io/oe-ui-misc.git#master",
-    "oe-workflow-ui-components": "git+http://evgit/oecloud.io/oe-workflow-ui-components.git#master",
     "style-loader": "^1.1.2",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7",
     "webpack-dev-server": "^3.8.0"
+  },
+  "dependencies": {
+    "oe-ui-misc": "git+http://evgit/oecloud.io/oe-ui-misc.git#master",
+    "oe-workflow-ui-components": "git+http://evgit/oecloud.io/oe-workflow-ui-components.git#master"
   }
 }

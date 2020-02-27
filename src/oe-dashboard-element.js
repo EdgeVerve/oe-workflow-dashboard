@@ -4,7 +4,7 @@ import "@polymer/iron-pages/iron-pages.js";
 import "@polymer/iron-flex-layout/iron-flex-layout.js";
 import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
 import '@polymer/app-layout/app-layout.js';
-import 'oe-workflow-ui-components/oe-workflow-element.js';
+import './oe-workflow-element.js';
 import './oe-workflow-status.js';
 import 'oe-message-handler/oe-message-handler.js'
 import { OECommonMixin } from "oe-mixins/oe-common-mixin.js";

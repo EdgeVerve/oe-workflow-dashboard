@@ -247,7 +247,7 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     return function (workflow) {
       if (!searchVal) return true;
       if (!workflow) return false;
-      return (workflow.name && ~workflow.name.indexOf(searchVal));
+      return (workflow.name && ~workflow.name.toLowerCase().indexOf(searchVal.toLowerCase()));
     };
   }
   /**

@@ -65,10 +65,11 @@ class OeWorkflowPlayground extends OEAjaxMixin(PolymerElement) {
           display:none !important;
         }
     </style>
-    <paper-dialog id="dialog">
+    <paper-dialog id="dialog" on-iron-overlay-closed="_endLaunch">
       <iron-pages selected=[[selectedPage]] attr-for-selected="page">
         <div page="payload" class="page-content">
-          <h2>Process Variables for [[workflowDef.name]]</h2>
+        <oe-combo id="workflow" label="Workflows" displayproperty="name" valueproperty="name" listdata=[[worfklows]]></oe-combo>
+          <h2>Process Variables</h2>
           <oe-json-input class="flex" label="Process Variables" value={{workflowDef.payload}} invalid={{isPayloadInvalid}}></oe-json-input>
           <div class="buttons-container">
             <paper-button primary on-tap="_executeWorkflow" disabled=[[isPayloadInvalid]]>Simulate</paper-button>
@@ -123,6 +124,12 @@ class OeWorkflowPlayground extends OEAjaxMixin(PolymerElement) {
   connectedCallback() {
     super.connectedCallback();
     var self = this;
+    this.$.workflow.addEventListener('change',function(event){
+      self.set('workflowDef', {
+        name: self.$.workflow.value,
+        payload: {}
+      });
+    })
     this.$.viewer.addEventListener('wheel', function (event) {
       event.preventDefault();
       if (event.deltaY > 0) {
@@ -136,12 +143,13 @@ class OeWorkflowPlayground extends OEAjaxMixin(PolymerElement) {
       'accept', 'reject'
     ]);
   }
-
-  launch(wfDefName) {
-    this.set('workflowDef', {
-      name: wfDefName,
-      payload: {}
-    });
+  _endLaunch(e){
+    if(!e.detail.confirmed && (e.detail.confirmed !== undefined)){
+      this.$.workflow.__resetComponent();
+      this.set('workflowDef',undefined);
+    }
+  }
+  launch() {
     this.set('selectedPage', 'payload');
     this.$.dialog.open();
     this.set('_selectedToken', {

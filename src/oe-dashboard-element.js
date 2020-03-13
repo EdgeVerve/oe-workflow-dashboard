@@ -53,18 +53,11 @@ class OeDashboardElement extends OECommonMixin(PolymerElement) {
       <oe-message-handler persist-on="error"></oe-message-handler>
     </div>
     <app-drawer id="startDrawer" align="start">
-    <paper-menu-button id="launchMenuBtn" horizontal-align="right" close-on-activate vertical-offset="42" horizontal-offset="32">
-      <paper-item class="item" slot="dropdown-trigger">Test Workflow</paper-item>
-      <paper-listbox slot="dropdown-content"> 
-        <template is="dom-repeat" items=[[allWorkflows]]>
-            <paper-item on-tap="_handleTestWorkflow">[[item.name]]</paper-item>
-        </template>
-      </paper-listbox>
-    </paper-menu-button> 
+    <paper-item class="item" on-tap="_handleTestWorkflow">Test Workflow</paper-item>
     <paper-item class="item" on-tap="_handleCompWorkflow">Completed Workflow</paper-item>
     <paper-item class="item" on-tap="_handleRunWorkflow">Running Workflow</paper-item>
     </app-drawer>
-   <oe-workflow-playground id="playground"></oe-workflow-playground> 
+   <oe-workflow-playground id="playground" worfklows=[[allWorkflows]]></oe-workflow-playground> 
     `;
   }
   static get is() {
@@ -145,7 +138,7 @@ class OeDashboardElement extends OECommonMixin(PolymerElement) {
 
   _handleTestWorkflow(e) {
     this.$.startDrawer.close();
-    this.$.playground.launch(e.model.item.name);
+    this.$.playground.launch();
  }
  _handleCompWorkflow(e) {
    this.$.startDrawer.close();

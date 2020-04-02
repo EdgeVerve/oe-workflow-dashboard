@@ -1,13 +1,15 @@
 const path = require('path');
 const bodyParser = require('body-parser');
 const DASHOARD_UI_ROOT = path.join(__dirname, 'dist');
+const components = require(path.join(__dirname,'../../server/component-config.json'));
 
 function configureRoutes(app, options) {
   const loopback = app.loopback;
   const router = new loopback.Router();
   router.get('/config', function getConfig(req, res, next) {
     res.send({
-      "restApiRoot": app.get('restApiRoot')
+      "restApiRoot": app.get('restApiRoot'),
+      "_modelerLink": components['oe-workflow-modeler/component'].mountPath
     }
     );
   })

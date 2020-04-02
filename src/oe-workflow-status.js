@@ -87,6 +87,10 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
       },
       restUrlApi: {
         type: String
+      },
+      reassign: {
+        type: String,
+        observer: '_procIdChanged'
       }
     };
   }
@@ -94,6 +98,9 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
     super.connectedCallback();
     var self = this;
     window.addEventListener('oe-workflow-rerun',this._handleError.bind(this));
+    this.$.viewer.addEventListener('refresh',function(event){
+      self._procIdChanged(event.detail);
+    })
     this.$.viewer.addEventListener('wheel', function (event) {
       event.preventDefault();
       if (event.deltaY > 0) {
@@ -171,12 +178,16 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
     if (self.userRoleObject) {
       var id = self.userRoleObject.processTokenId;
       self._xhrget(`${self.restUrlApi}/Tasks`, function (err, data) {
-        if (data) {
+        if (!err) {
           data.forEach(function (task) {
             if (task.processTokenId === id) {
               self.set('taskId', task.id);
             }
           })
+        }
+        else {
+          var error = err.message ? err.message : err;
+          self.fire('oe-show-error', error);
         }
         if (self.taskId) {
           var taskid = self.taskId;
@@ -190,7 +201,8 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
                 self.fire('oe-show-success', 'Task delegate is trigger for this Task Id'+ taskid);
               }
               else {
-                self.fire('oe-show-error', err.message)
+                var error = err.message ? err.message : err;
+                self.fire('oe-show-error', error);
               }
             });
           }
@@ -206,26 +218,31 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
     if (self.procInstance) {
       var fileName = self.procInstance.processDefinitionName;
       self._xhrget(`${self.restUrlApi}/bpmndata`, function (err, data) {
-        if (data) {
+        if (!err) {
           data.forEach(function (bpmn) {
             if (bpmn.bpmnname === fileName) {
               self.set('bpmnDt', bpmn);
             }
           })
         }
+        else {
+          var error = err.message ? err.message : err;
+          self.fire('oe-show-error', error);
+        }
       });
     }
   }
   _procIdChanged(event) {
     var self = this;
-    if (self.procInstanceId) {
-      var id = self.procInstanceId;
+    self.processInstanceId = self.procInstanceId ? self.procInstanceId : event;
+    if (self.processInstanceId) {
+      var id = self.processInstanceId;
       self._xhrget(`${self.restUrlApi}/ProcessInstances/${id}`, function (err, data) {
         self.set('procInstance', data);
       });
-      if (!event.target) {
-        self._xhrget(`${self.restUrlApi}/UserInfos`, function (err, data) {
-          if (data) {
+      if (self.reassign) {
+        self._xhrget(`${self.restUrlApi}/Users`, function (err, data) {
+          if (!err) {
             var response1 = [];
             data.forEach(function (user) {
               var obj = {};
@@ -235,9 +252,13 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
             })
             self.set('userLt', response1);
           }
+          else{
+            var error = err.message ? err.message : err;
+            self.fire('oe-show-error', error);
+          }
         });
         self._xhrget(`${self.restUrlApi}/Roles`, function (err, data) {
-          if (data) {
+          if (!err) {
             var response = [];
             data.forEach(function (role) {
               var obj = {};
@@ -247,7 +268,12 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
             })
             self.set('roleLt', response);
           }
+          else {
+            var error = err.message ? err.message : err;
+            self.fire('oe-show-error', error);
+          }
         });
+        self.set('reassign',undefined);
       }
     }
   }
@@ -256,6 +282,11 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
     if (self.bpmnDt) {
       self.$.viewer.set('bpmnXml', self.bpmnDt.xmldata);
       self.$.viewer.set('processInstance', self.procInstance);
+      var playgroundViewer = document.getElementsByTagName('oe-dashboard-element')[0].shadowRoot.getElementById('playground').shadowRoot.getElementById('viewer');
+      if(playgroundViewer){
+        playgroundViewer.set('userList', self.userLt);
+        playgroundViewer.set('roleList', self.roleLt);
+      }
       self.$.viewer.set('userList', self.userLt);
       self.$.viewer.set('roleList', self.roleLt);
     }
@@ -274,7 +305,8 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
           self.fire('oe-show-success', 'Retry of failed Task is triggered for process token '+processTokenId);
         }
         else {
-          self.fire('oe-show-error', err.message);
+          var error = err.message ? err.message : err;
+          self.fire('oe-show-error', error);
         }
       });
     }

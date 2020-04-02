@@ -3,6 +3,7 @@ import 'oe-utils/oe-utils.js';
 import "@polymer/iron-pages/iron-pages.js";
 import "@polymer/iron-flex-layout/iron-flex-layout.js";
 import "@polymer/iron-flex-layout/iron-flex-layout-classes.js";
+import "@polymer/paper-icon-button/paper-icon-button";
 import '@polymer/app-layout/app-layout.js';
 import './oe-workflow-element.js';
 import './oe-workflow-status.js';
@@ -21,7 +22,7 @@ import './playground/oe-workflow-playground.js';
 class OeDashboardElement extends OECommonMixin(PolymerElement) {
   static get template() {
     return html`
-      <style include="iron-flex">
+      <style include="iron-flex iron-flex-alignment">
         .fullsize {
           height:100%;
           width: 100%;
@@ -37,12 +38,25 @@ class OeDashboardElement extends OECommonMixin(PolymerElement) {
         width: 225px;
         justify-content: center;
       }
-     
+      .link {
+        width: 100%;
+        justify-items: center;
+        text-align: center;
+        position: absolute;
+        margin-top: 240px;
+      }
+     .link a {
+       color: #303f9f;
+     }
       </style>
+      <app-header-layout>
       <app-header condenses reveals fixed slot="header" effects="waterfall">
       <app-toolbar>
         <paper-icon-button icon="menu" on-tap="_navTap"></paper-icon-button>
+        <div class="center horizontal justified layout fullsize">
         <div main-title>Workflow Dashboard</div>
+        <paper-icon-button icon="refresh" on-tap="_refresh" class="icon-button"></paper-icon-button>
+        </div>
       </app-toolbar>
     </app-header>
     <div class="layout horizontal" id="OeDashboardEle">
@@ -50,14 +64,26 @@ class OeDashboardElement extends OECommonMixin(PolymerElement) {
           <oe-workflow-element workflow-def-name={{allWorkflows}} rest-url="{{restApiRoot}}" id="list" on-oe-workflow-instance="_handleInstance"></oe-workflow-element>
           <oe-workflow-status id="status" rest-url-api="{{restApiRoot}}" page-before="{{_selectedPage}}"></oe-workflow-status>
       </iron-pages>
+      <template is="dom-if" if=[[!allWorkflows.length]]>
+      <div class="link">
+    <a href="[[_modelerLink]]" title="Click here for Workflow Modeler tool" target="_blank">
+      <paper-card elevation="0">
+      <paper-icon-button id="create" icon="create"></paper-icon-button>
+        <div class="title">Workflow Modeler</div>
+        <div class="desc">Create workflow bpmn files for the project</div>
+      </paper-card>
+    </a>
+    </div>
+    </template>
       <oe-message-handler persist-on="error"></oe-message-handler>
     </div>
-    <app-drawer id="startDrawer" align="start">
-    <paper-item class="item" on-tap="_handleTestWorkflow">Test Workflow</paper-item>
-    <paper-item class="item" on-tap="_handleCompWorkflow">Completed Workflow</paper-item>
-    <paper-item class="item" on-tap="_handleRunWorkflow">Running Workflow</paper-item>
-    </app-drawer>
    <oe-workflow-playground id="playground" worfklows=[[allWorkflows]]></oe-workflow-playground> 
+   </app-header-layout>
+   <app-drawer id="startDrawer" align="start">
+   <paper-item class="item" on-tap="_handleTestWorkflow">Test Workflow</paper-item>
+   <paper-item class="item" on-tap="_handleCompWorkflow">Completed Workflow</paper-item>
+   <paper-item class="item" on-tap="_handleRunWorkflow">Running Workflow</paper-item>
+   </app-drawer>
     `;
   }
   static get is() {
@@ -71,6 +97,9 @@ class OeDashboardElement extends OECommonMixin(PolymerElement) {
         value: 0
       },
       restApiRoot: {
+        type: String
+      },
+      _modelerLink: {
         type: String
       }
     };
@@ -97,7 +126,7 @@ class OeDashboardElement extends OECommonMixin(PolymerElement) {
     oReq.responseType = mime;
     oReq.send();
   }
-  _navTap(e){
+  _navTap(e) {
     this.$.startDrawer.toggle();
   }
   connectedCallback() {
@@ -106,7 +135,8 @@ class OeDashboardElement extends OECommonMixin(PolymerElement) {
     self._xhrget(`config`, function (err, data) {
       if (data.restApiRoot) {
         window.OEUtils.apibaseroute = location.origin;
-        self.set('restApiRoot', data.restApiRoot);
+        self.set('restApiRoot',data.restApiRoot);
+        self.set('_modelerLink',data._modelerLink);
         window.OEUtils.restApiRoot = self.restApiRoot;
         self.$.list._getWorkFlowInstance();
       }
@@ -121,6 +151,9 @@ class OeDashboardElement extends OECommonMixin(PolymerElement) {
     self.addEventListener('user-role-changed', function (event) {
       self.$.status.set('userRoleObject', event.detail);
     })
+    window.addEventListener('reassign-task',function(event){
+      self.$.status.set('reassign',event.detail.processInstanceId);
+    })
   }
   _handleInstance(e) {
     var self = this;
@@ -131,24 +164,28 @@ class OeDashboardElement extends OECommonMixin(PolymerElement) {
       }, 1000);
     }
     else {
-      self.set('_selectedPage', 1);
-      self.$.status.set('procInstanceId', e.detail.processId);
+      if(e.detail.processId){
+        self.set('_selectedPage', 1);
+        self.$.status.set('procInstanceId', e.detail.processId);
+      }
     }
   }
 
   _handleTestWorkflow(e) {
     this.$.startDrawer.close();
     this.$.playground.launch();
- }
- _handleCompWorkflow(e) {
-   this.$.startDrawer.close();
-   this.$.list.set('flag',true);
- }
- _handleRunWorkflow(e){
-  this.$.startDrawer.close();
-  this.$.list.set('flag',false);
- }
- 
+  }
+  _handleCompWorkflow(e) {
+    this.$.startDrawer.close();
+    this.$.list.set('flag', true);
+  }
+  _handleRunWorkflow(e) {
+    this.$.startDrawer.close();
+    this.$.list.set('flag', false);
+  }
+  _refresh(e){
+    this.$.list._getWorkFlowInstance();
+  }
 }
 
 window.customElements.define(OeDashboardElement.is, OeDashboardElement);

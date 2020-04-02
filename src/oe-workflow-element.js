@@ -65,7 +65,6 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
       }
       .labl {
         font-weight: bold;
-        max-width: 200px;
         overflow: hidden;
         text-overflow: ellipsis;
       }
@@ -78,6 +77,15 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     }
     iron-collapse {
       outline:none;
+    }
+    paper-item {
+      --paper-item-focused-before:{
+        background: none;
+        opacity:0;
+      }
+      --paper-item-selected:{
+        background:#e5e5e5;
+      }     
     }
     .icon-button {
       margin-top: 18px;
@@ -98,18 +106,15 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
     <template is="dom-if" if=[[workflowDefName.length]]>
     <div class="center horizontal justified layout fullsize">
       <label class="type">{{_flagName}}</label>
-    <div class="center horizontal justified layout">
     <paper-input label="Enter Workflow Name" value={{searchVal}}>
       <paper-icon-button slot="suffix" icon="search"></paper-icon-button>
     </paper-input>
-      <paper-icon-button icon="refresh" on-tap="_getWorkFlowInstance" class="icon-button"></paper-icon-button>
-      </div>
       </div>
       <div>
       <paper-listbox class="fullsize">
         <template is="dom-repeat" items="{{workflowDefName}}" as="workflow" filter="{{isDefName(searchVal)}}">
           <paper-item class="box" on-tap="_setFlag" data-def-id$=[[workflow.id]]>
-          <div class="layout horizontal center justified fullsize font" style="cursor:pointer">
+          <div class="layout horizontal center justified fullsize font" style="cursor:pointer;background:none;">
           <div class="labl" id="lbl">
           <span>{{workflow.name}}</span>
           <paper-tooltip>{{workflow.name}}</paper-tooltip>
@@ -161,9 +166,6 @@ class oeWorkflowElement extends OEAjaxMixin(OECommonMixin(PolymerElement)) {
         </template>
       </paper-listbox>
       </div>
-      </template>
-      <template is="dom-if" if=[[!workflowDefName.length]]>
-      <label class="error">No Worflow Definitions are deployed</label>
       </template>
     </div>`;
   }

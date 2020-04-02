@@ -30,6 +30,7 @@ class OeWorkflowPlayground extends OEAjaxMixin(PolymerElement) {
 
         paper-dialog{
            overflow: auto;
+            top:64px;
             width:100%;
             height:100%;
             margin:0px;
@@ -37,7 +38,7 @@ class OeWorkflowPlayground extends OEAjaxMixin(PolymerElement) {
         }
 
         #viewer{
-            height:70vh;
+            height:68vh;
         }
         .action-panel paper-button{
             margin:0px 8px;
@@ -87,33 +88,11 @@ class OeWorkflowPlayground extends OEAjaxMixin(PolymerElement) {
             </div>
           </div>
           <div class=" flex">
-            <oe-bpmn-viewer id="viewer" token-view-mode="auto" on-oe-bpmn-viewer-selection="_tokenClicked"></oe-bpmn-viewer>
-            <div class="layout horizontal justified" hidden=[[!_selectedToken.isVisible]]>
-              <div class="layout vertical status-pane flex">
-                <label>Name : [[_selectedToken.name]]</label>
-                <label>[[_selectedToken.status]] : [[_selectedToken.message]]</label>
-              </div>
-              <div hidden=[[!_selectedToken.allowAction]]>
-                <paper-button on-tap="_gotoCompleteTask">Complete Task</paper-button>
-              </div>
-            </div>
+            <oe-bpmn-viewer id="viewer" on-oe-bpmn-viewer-selection="_tokenClicked"></oe-bpmn-viewer>
           </div>
           <div class="buttons-container">
               <paper-button primary on-tap="_gotoPayload">Back</paper-button>
               <paper-button dialog-dismiss>Cancel</paper-button>
-          </div>
-        </div>
-        <div page="task" class="page-content">
-          <h2>[[_selectedToken.name]]</h2>
-          <div class="flex">
-            <oe-combo label="Action" value={{taskPayload.__action__}} listdata=[[__taskActionListData]]></oe-combo>
-            <oe-textarea label="Comments" value={{taskPayload.__comments__}} max-rows="3"></oe-textarea>
-            <oe-json-input label="Message" value={{taskPayload.msg}} max-rows="4" invalid={{isTaskMessageInvalid}}></oe-json-input>
-            <oe-json-input label="Process Variables" value={{taskPayload.pv}} max-rows="4" invalid={{isTaskPayloadInvalid}}></oe-json-input>
-          </div>
-          <div class="buttons-container">
-              <paper-button primary on-tap="__completeActiveTask" disabled=[[__or(isTaskPayloadInvalid,isTaskMessageInvalid)]]>Complete</paper-button>
-              <paper-button primary on-tap="_gotoProgress">Cancel</paper-button>
           </div>
         </div>
       </iron-pages>
@@ -130,6 +109,10 @@ class OeWorkflowPlayground extends OEAjaxMixin(PolymerElement) {
         payload: {}
       });
     })
+    this.$.viewer.addEventListener('refresh',function(event){
+      self.refreshProcess();
+    })
+    
     this.$.viewer.addEventListener('wheel', function (event) {
       event.preventDefault();
       if (event.deltaY > 0) {
@@ -139,9 +122,6 @@ class OeWorkflowPlayground extends OEAjaxMixin(PolymerElement) {
       }
     });
     window.OEUtils.apibaseroute = location.origin;
-    this.set('__taskActionListData', [
-      'accept', 'reject'
-    ]);
   }
   _endLaunch(e){
     if(!e.detail.confirmed && (e.detail.confirmed !== undefined)){
@@ -166,15 +146,6 @@ class OeWorkflowPlayground extends OEAjaxMixin(PolymerElement) {
   _gotoProgress() {
     this.set('selectedPage', 'progress');
   }
-
-  _gotoCompleteTask() {
-    this.set('selectedPage', 'task');
-    this.set('taskPayload', {
-      msg: {},
-      pv: {}
-    });
-  }
-
   /** payload page functions */
 
   _executeWorkflow() {
@@ -209,6 +180,7 @@ class OeWorkflowPlayground extends OEAjaxMixin(PolymerElement) {
           });
           this._gotoProgress();
         });
+        this.$.viewer.set('processInstance', process);
       });
     });
   }
@@ -333,29 +305,6 @@ class OeWorkflowPlayground extends OEAjaxMixin(PolymerElement) {
   __getTasksForProcess(processId, cb) {
     let url = this.__getApiUrl(`ProcessInstances/${processId}/tasks`);
     this.makeAjaxCall(url, 'get', null, null, null, null, function (err, resp) {
-      if (err) {
-        cb(err, null);
-        return;
-      }
-      cb(null, resp);
-    });
-  }
-
-  __completeActiveTask() {
-    var self = this;
-    this.__completeTask(this._selectedToken.__token.taskId, this.taskPayload, function (err, resp) {
-      if (err) {
-        self.fire('oe-show-error', err.detail.request.response.error.message);
-        return;
-      }
-      self._gotoProgress();
-      self.refreshProcess();
-    });
-  }
-
-  __completeTask(taskId, payload, cb) {
-    let url = this.__getApiUrl(`/Tasks/${taskId}/complete`);
-    this.makeAjaxCall(url, 'put', payload, null, null, null, function (err, resp) {
       if (err) {
         cb(err, null);
         return;

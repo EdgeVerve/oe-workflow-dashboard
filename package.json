@@ -22,6 +22,8 @@
   "devDependencies": {
     "@polymer/app-layout": "^3.1.0",
     "@polymer/iron-pages": "^3.0.1",
+    "@polymer/paper-card": "^3.0.1",
+    "@polymer/paper-material": "^3.0.1",
     "@polymer/paper-icon-button": "^3.0.1",
     "@polymer/paper-input": "^3.0.2",
     "copy-webpack-plugin": "^5.0.4",

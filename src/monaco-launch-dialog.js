@@ -62,7 +62,7 @@ class MonacoLaunchDialog extends OECommonMixin(PolymerElement) {
   connectedCallback() {
     super.connectedCallback();
     var self = this;
-    window.addEventListener('open-json-editor',function(event){
+    window.addEventListener('oe-workflow-rerun',function(event){
       self.set('processObject',event.detail);
       self.$.monacoDialog.open();
       self.async(function(){
@@ -79,7 +79,7 @@ class MonacoLaunchDialog extends OECommonMixin(PolymerElement) {
     if(self.editor.getValue()){
       data = JSON.parse(self.editor.getValue());
     }
-    self.fire('oe-workflow-rerun',{
+    self.fire('oe-workflow-retry',{
       processInstanceId: self.processObject.processInstanceId,
       processToken: self.processObject.processToken,
       data: data

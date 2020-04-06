@@ -97,7 +97,7 @@ class OeWorkflowStatus extends OECommonMixin(PolymerElement) {
   connectedCallback() {
     super.connectedCallback();
     var self = this;
-    window.addEventListener('oe-workflow-rerun',this._handleError.bind(this));
+    window.addEventListener('oe-workflow-retry',this._handleError.bind(this));
     this.$.viewer.addEventListener('refresh',function(event){
       self._procIdChanged(event.detail);
     })

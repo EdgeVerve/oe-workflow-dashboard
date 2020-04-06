@@ -133,14 +133,16 @@ class OeDashboardElement extends OECommonMixin(PolymerElement) {
     super.connectedCallback();
     var self = this;
     self._xhrget(`config`, function (err, data) {
+      self.$.list._getWorkFlowInstance();
       if (!err) {
         window.OEUtils.apibaseroute = location.origin;
         self.set('restApiRoot',data.restApiRoot);
         self.set('_modelerLink',data._modelerLink);
         window.OEUtils.restApiRoot = self.restApiRoot;
       }
-      self.$.list._getWorkFlowInstance();
-      
+      else {
+        self.fire('oe-show-error', err);
+      }
     });
     self.addEventListener('back-button-pressed', function (event) {
       self.set('_selectedPage', 0);

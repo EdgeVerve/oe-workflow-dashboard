@@ -161,7 +161,7 @@ class OeWorkflowPlayground extends OEAjaxMixin(PolymerElement) {
         if (processErr) {
           return console.error(processErr);
         }
-        this.__getBpmnForProcess(process.name, (bpmnErr, bpmndt) => {
+        this.__getBpmnForProcess(process.processDefinitionName, (bpmnErr, bpmndt) => {
           if (bpmnErr) {
             return console.error(bpmnErr);
           }

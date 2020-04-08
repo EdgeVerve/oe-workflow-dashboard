@@ -180,7 +180,7 @@ class OeWorkflowPlayground extends OEAjaxMixin(PolymerElement) {
           });
           this._gotoProgress();
         });
-        this.$.viewer.set('processInstance', process);
+        //this.$.viewer.set('processInstance', process);
       });
     });
   }

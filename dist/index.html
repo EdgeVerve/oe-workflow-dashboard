@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Oe Workflow Dashboard</title>
+</head>
+<style>
+  /* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+</style>
+<body style="margin: 0px;font-family: Roboto, Noto, sans-serif;">
+  <div class="container" id="main">
+  <oe-dashboard-element></oe-dashboard-element>
+  <monaco-launch-dialog>
+    <div id="monaco-input-editor" style="
+    padding-top: 0px;
+    position: relative;
+    height: 350px;
+    width: 420px;"></div>
+  </monaco-launch-dialog>
+  </div>
+  </body>
+  <script src="index.js"></script>
+</html>

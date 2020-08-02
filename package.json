@@ -1,6 +1,6 @@
 {
   "name": "oe-workflow-dashboard",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "oeCloud Workflow dashboard",
   "main": "app/index.js",
   "scripts": {
@@ -32,9 +32,9 @@
     "mini-css-extract-plugin": "^0.8.0",
     "monaco-editor": "^0.19.2",
     "monaco-editor-webpack-plugin": "^1.8.2",
-    "oe-message-handler": "git+http://evgit/oecloud.io/oe-message-handler.git#master",
-    "oe-ui-misc": "git+http://evgit/oecloud.io/oe-ui-misc.git#master",
-    "oe-workflow-ui-components": "git+http://evgit/oecloud.io/oe-workflow-ui-components.git#master",
+    "oe-message-handler": "git+http://evgit/oecloud.io/oe-message-handler.git#2.2.0",
+    "oe-ui-misc": "git+http://evgit/oecloud.io/oe-ui-misc.git#2.3.0",
+    "oe-workflow-ui-components": "git+http://evgit/oecloud.io/oe-workflow-ui-components.git#2.3.0",
     "style-loader": "^1.1.2",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7",

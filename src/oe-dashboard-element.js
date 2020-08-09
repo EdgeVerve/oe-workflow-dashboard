@@ -66,7 +66,7 @@ class OeDashboardElement extends OECommonMixin(PolymerElement) {
       </iron-pages>
       <template is="dom-if" if=[[!allWorkflows.length]]>
       <div class="link">
-    <a href="[[_modelerLink]]" title="Click here for Workflow Modeler tool" target="_blank">
+    <a href="[[_modelerLink]]" title="Click here for Workflow Modeler tool" target="_blank" rel="noopener noreferrer">
       <paper-card elevation="0">
       <paper-icon-button id="create" icon="create"></paper-icon-button>
         <div class="title">Workflow Modeler</div>

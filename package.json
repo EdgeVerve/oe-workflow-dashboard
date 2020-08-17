@@ -26,18 +26,18 @@
     "@polymer/paper-material": "^3.0.1",
     "@polymer/paper-icon-button": "^3.0.1",
     "@polymer/paper-input": "^3.0.2",
-    "copy-webpack-plugin": "^5.0.4",
-    "css-loader": "^3.4.1",
-    "file-loader": "^5.0.2",
-    "mini-css-extract-plugin": "^0.8.0",
-    "monaco-editor": "^0.19.2",
-    "monaco-editor-webpack-plugin": "^1.8.2",
+    "copy-webpack-plugin": "5.1.1",
+    "css-loader": "3.6.0",
+    "file-loader": "5.1.0",
+    "mini-css-extract-plugin": "0.8.2",
+    "monaco-editor": "0.19.3",
+    "monaco-editor-webpack-plugin": "1.9.0",
     "oe-message-handler": "git+http://evgit/oecloud.io/oe-message-handler.git#2.2.0",
     "oe-ui-misc": "git+http://evgit/oecloud.io/oe-ui-misc.git#2.3.0",
     "oe-workflow-ui-components": "git+http://evgit/oecloud.io/oe-workflow-ui-components.git#2.3.0",
-    "style-loader": "^1.1.2",
-    "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.7",
-    "webpack-dev-server": "^3.8.0"
+    "style-loader": "1.2.1",
+    "webpack": "4.44.1",
+    "webpack-cli": "3.3.12",
+    "webpack-dev-server": "3.11.0"
   }
 }
